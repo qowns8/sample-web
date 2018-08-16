@@ -6,6 +6,7 @@ import (
 	"os"
 	"encoding/base64"
 	"crypto/rand"
+	"github.com/sample-web/models"
 )
 
 var db  = NewRDB()

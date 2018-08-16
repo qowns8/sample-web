@@ -4,6 +4,7 @@ import (
 	_"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"errors"
+	"github.com/sample-web/ctrl"
 )
 
 type User struct {

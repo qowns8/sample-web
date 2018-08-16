@@ -1,10 +1,9 @@
-package ctrl
+package main
 
 import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
-	"github.com/sample-web/models"
 )
 
 var user = User{}

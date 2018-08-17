@@ -4,30 +4,34 @@ import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 )
 
 var user = User{}
 
 type LoginFormData struct {
-	email string `json: "email"`
-	pwd string `json: "pwd"`
+	Email string `json: "email"`
+	Pwd string `json: "pwd"`
 }
 
 type CreateLoginFormDate struct {
-	loginFormData LoginFormData `json: "loginForm"`
-	name string `json: "name"`
+	LoginForm LoginFormData `json: "loginForm"`
+	Name string `json: "name"`
 }
 
 type loginResult struct {
-	result bool `json: "result"`
-	token string `json: "token"`
+	Result bool `json: "result"`
+	Token string `json: "token"`
 }
 
 func UserRegisteration(w http.ResponseWriter, r *http.Request) {
-	createLoginFormData := CreateLoginFormDate{}
 	body, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(body, createLoginFormData)
-	result, err := user.Create(createLoginFormData)
+	createLoginFormDate := CreateLoginFormDate{}
+	jsEerr := json.Unmarshal(body, &createLoginFormDate)
+	if jsEerr != nil {
+		log.Fatal(jsEerr.Error())
+	}
+	result, err := user.Create(createLoginFormDate)
 
 	if err != nil {
 		w.Write([]byte(err.Error()))
@@ -39,24 +43,24 @@ func UserRegisteration(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	loginFormData := LoginFormData{email:"", pwd:""}
+	loginFormData := LoginFormData{Email:"", Pwd:""}
 	body, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(body, &loginFormData)
 
 	loginUser := user.GetUser(loginFormData)
 
-	isvalid := isVaildPassword(loginUser, loginFormData.pwd)
+	isvalid := isVaildPassword(loginUser, loginFormData.Pwd)
 
 	if isvalid {
 		result, _ := json.Marshal(loginResult{
-			result:isvalid,
-			token: loginUser.access_token,
+			Result:isvalid,
+			Token: loginUser.Access_token,
 		})
 		w.Write(result)
 	} else {
 		result, _ := json.Marshal(loginResult{
-			result:isvalid,
-			token: "",
+			Result:isvalid,
+			Token: "",
 		})
 		w.Write(result)
 	}

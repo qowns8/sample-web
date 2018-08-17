@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
-	router := route()
+	println("server start")
+	router := Route()
 	log.Fatal(http.ListenAndServe(":5000", router))
 }

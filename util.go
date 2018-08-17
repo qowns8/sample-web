@@ -6,7 +6,6 @@ import (
 	"os"
 	"encoding/base64"
 	"crypto/rand"
-	"github.com/sample-web/models"
 )
 
 var db  = NewRDB()
@@ -14,9 +13,9 @@ var db  = NewRDB()
 func NewRDB() *gorm.DB {
 	root := os.Getenv("APP_MYSQL")
 	if root == "" {
-		root = "root:pwd@tcp(127.0.0.1:3306)/testdb"
+		root = "root:admin@tcp(127.0.0.1:3306)/testdb"
 	}
-	db, _ := gorm.Open("mysql", root) //"root:pwd@tcp(127.0.0.1:3306)/testdb")
+	db, _ := gorm.Open("mysql", root) //"root:admin@tcp(127.0.0.1:3306)/testdb")
 	return db
 }
 
@@ -32,6 +31,6 @@ func MakePassword(str string) []byte {
 }
 
 func isVaildPassword(user User, str string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(str), []byte(user.pwd))
+	err := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(str))
 	return err == nil
 }

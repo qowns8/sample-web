@@ -34,3 +34,11 @@ func isVaildPassword(user User, str string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(str))
 	return err == nil
 }
+
+func makeErrorRequestJson(code int, msg string) ErrorRequest {
+	return ErrorRequest{
+		Code:code,
+		Result:"failed",
+		Message:msg,
+	}
+}

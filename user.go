@@ -20,6 +20,11 @@ func (user User) GetUser(data LoginFormData) User {
 	return user
 }
 
+func (user User) TokenCheck(token string) bool {
+	db.Where("access_token = ?", token).First(&user)
+	return user.Access_token != token
+}
+
 func checkUserDuplicate(email string) bool {
 	var num int
 	db.Model(&User{}).Where("email = ?", email).Count(&num)

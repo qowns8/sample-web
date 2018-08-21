@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"golang.org/x/crypto/bcrypt"
@@ -6,9 +6,11 @@ import (
 	"os"
 	"encoding/base64"
 	"crypto/rand"
+	"github.com/qowns8/sample-web/models"
+	"github.com/qowns8/sample-web/ctrls"
 )
 
-var db  = NewRDB()
+var Db  = NewRDB()
 
 func NewRDB() *gorm.DB {
 	root := os.Getenv("APP_MYSQL")
@@ -30,13 +32,13 @@ func MakePassword(str string) []byte {
 	return token
 }
 
-func isVaildPassword(user User, str string) bool {
+func IsVaildPassword(user models.User, str string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(str))
 	return err == nil
 }
 
-func makeErrorRequestJson(code int, msg string) ErrorRequest {
-	return ErrorRequest{
+func MakeErrorRequestJson(code int, msg string) ctrls.ErrorRequest {
+	return ctrls.ErrorRequest{
 		Code:code,
 		Result:"failed",
 		Message:msg,

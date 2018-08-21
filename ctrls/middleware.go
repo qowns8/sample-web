@@ -1,9 +1,11 @@
-package main
+package ctrls
 
 import (
 	"net/http"
 	"encoding/json"
 	"log"
+	"github.com/qowns8/sample-web/models"
+	"github.com/qowns8/sample-web/utils"
 )
 
 type Middleware func(http.HandlerFunc) http.HandlerFunc
@@ -12,10 +14,11 @@ func AccessMiddleware() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			token := r.Header.Get("access_token")
+			user := models.User{}
 			isVaild := user.TokenCheck(token)
 
 			if isVaild || token == "" {
-				reqJson := makeErrorRequestJson(405, "access token invailed")
+				reqJson := utils.MakeErrorRequestJson(405, "access token invalㅑed")
 				req, _ := json.Marshal(reqJson)
 				w.Write(req)
 			} else {

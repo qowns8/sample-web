@@ -1,33 +1,20 @@
-package main
+package ctrls
 
 import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"github.com/qowns8/sample-web/models"
+	"github.com/qowns8/sample-web/utils"
 )
 
-var user = User{}
-
-type LoginFormData struct {
-	Email string `json: "email"`
-	Pwd string `json: "pwd"`
-}
-
-type CreateLoginFormDate struct {
-	LoginForm LoginFormData `json: "loginForm"`
-	Name string `json: "name"`
-}
-
-type loginResult struct {
-	Result bool `json: "result"`
-	Token string `json: "token"`
-}
 
 func UserRegisteration(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-	createLoginFormDate := CreateLoginFormDate{}
+	createLoginFormDate := models.CreateLoginFormDate{}
 	jsEerr := json.Unmarshal(body, &createLoginFormDate)
+	user := models.User{}
 	if jsEerr != nil {
 		log.Fatal(jsEerr.Error())
 	}
@@ -43,22 +30,22 @@ func UserRegisteration(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	loginFormData := LoginFormData{Email:"", Pwd:""}
+	loginFormData := models.LoginFormData{Email:"", Pwd:""}
 	body, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(body, &loginFormData)
-
+	user := models.User{}
 	loginUser := user.GetUser(loginFormData)
 
-	isvalid := isVaildPassword(loginUser, loginFormData.Pwd)
+	isvalid := utils.IsVaildPassword(loginUser, loginFormData.Pwd)
 
 	if isvalid {
-		result, _ := json.Marshal(loginResult{
+		result, _ := json.Marshal(models.LoginResult{
 			Result:isvalid,
 			Token: loginUser.Access_token,
 		})
 		w.Write(result)
 	} else {
-		result, _ := json.Marshal(loginResult{
+		result, _ := json.Marshal(models.LoginResult{
 			Result:isvalid,
 			Token: "",
 		})

@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"errors"
 	"github.com/qowns8/sample-web/utils"
+	"log"
 )
 
 type Canvas struct {
@@ -25,7 +26,6 @@ func (c *Canvas) CreateCanvasByToken(token string, canvas *Canvas) error {
 	defer tx.Commit()
 	isCanvasCreateSuccess := createOnlyCanvas(tx, canvas)
 	isPermissionCreateSuccess := CreateCanvasPermission(tx, token, canvas.Id, 3)
-	println(isPermissionCreateSuccess, isPermissionCreateSuccess)
 	if isCanvasCreateSuccess == false || isPermissionCreateSuccess == false {
 		tx.Rollback()
 		return errors.New("create Canvas Fail")
@@ -34,9 +34,25 @@ func (c *Canvas) CreateCanvasByToken(token string, canvas *Canvas) error {
 }
 
 func createOnlyCanvas(tx *gorm.DB, canvas *Canvas) bool {
-	err := tx.Create(canvas)
+	err := tx.Create(canvas).Error
 	if err != nil {
-		return true
+		log.Println(err.Error())
+		return false
 	}
-	return false
+	return true
+}
+
+func (c *Canvas) UpdateCanvas(token string, canvas *Canvas) error {
+	tx := utils.Db.Begin()
+	defer tx.Commit()
+	user := User{}
+	user = user.GetUserByToken(token)
+	permission := Canvas_permission{}
+	permission = permission.GetCanvasPermission(canvas.Id, user.Id)
+	if permission.Permission > 2 {
+		tx.Update(&canvas)
+	} else {
+		return errors.New("")
+	}
+
 }

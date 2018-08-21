@@ -41,4 +41,8 @@ func CreateCanvas (w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-//func GetCanvas () {}
+//todo 캔버스 수정 (권한 2 이상), 삭제 (권한 3)
+
+func EditCanvas (w http.ResponseWriter, r *http.Request) {
+
+}

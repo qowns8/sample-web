@@ -28,13 +28,13 @@ func (user User) GetUser(data  utils.LoginFormData) User {
 }
 
 func (user User) GetUserByToken(token string) User {
-	utils.Db.Where("access_token = ?", token).First(&user)
+	utils.Db.First(&user,"access_token = ?", token)
 	return user
 }
 
 func (user User) TokenCheck(token string) bool {
-	utils.Db.Where("access_token = ?", token).First(&user)
-	return user.Access_token != token
+	utils.Db.First(&user,"access_token = ?", token)
+	return user.Access_token == token
 }
 
 func checkUserDuplicate(email string) bool {

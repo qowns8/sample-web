@@ -6,6 +6,8 @@ import (
 	"os"
 	"encoding/base64"
 	"crypto/rand"
+     _ "github.com/go-sql-driver/mysql"
+
 )
 
 var Db  = NewRDB()
@@ -15,7 +17,11 @@ func NewRDB() *gorm.DB {
 	if root == "" {
 		root = "root:admin@tcp(127.0.0.1:3306)/testdb"
 	}
-	db, _ := gorm.Open("mysql", root) //"root:admin@tcp(127.0.0.1:3306)/testdb")
+	db, err := gorm.Open("mysql", root) //"root:admin@tcp(127.0.0.1:3306)/testdb")
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return db
 }
 

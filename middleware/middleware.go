@@ -1,4 +1,4 @@
-package ctrls
+package middleware
 
 import (
 	"net/http"
@@ -16,9 +16,8 @@ func AccessMiddleware() Middleware {
 			token := r.Header.Get("access_token")
 			user := models.User{}
 			isVaild := user.TokenCheck(token)
-
-			if isVaild || token == "" {
-				reqJson := utils.MakeErrorRequestJson(405, "access token invalㅑed")
+			if !isVaild || token == "" {
+				reqJson := utils.MakeErrorRequestJson(405, "access token invalied")
 				req, _ := json.Marshal(reqJson)
 				w.Write(req)
 			} else {

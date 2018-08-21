@@ -12,7 +12,7 @@ import (
 
 func UserRegisteration(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-	createLoginFormDate := models.CreateLoginFormDate{}
+	createLoginFormDate := utils.CreateLoginFormDate{}
 	jsEerr := json.Unmarshal(body, &createLoginFormDate)
 	user := models.User{}
 	if jsEerr != nil {
@@ -30,22 +30,22 @@ func UserRegisteration(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	loginFormData := models.LoginFormData{Email:"", Pwd:""}
+	loginFormData :=  utils.LoginFormData{Email:"", Pwd:""}
 	body, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(body, &loginFormData)
 	user := models.User{}
 	loginUser := user.GetUser(loginFormData)
 
-	isvalid := utils.IsVaildPassword(loginUser, loginFormData.Pwd)
+	isvalid := models.IsVaildPassword(loginUser, loginFormData.Pwd)
 
 	if isvalid {
-		result, _ := json.Marshal(models.LoginResult{
+		result, _ := json.Marshal(utils.LoginResult{
 			Result:isvalid,
 			Token: loginUser.Access_token,
 		})
 		w.Write(result)
 	} else {
-		result, _ := json.Marshal(models.LoginResult{
+		result, _ := json.Marshal(utils.LoginResult{
 			Result:isvalid,
 			Token: "",
 		})

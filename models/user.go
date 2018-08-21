@@ -4,6 +4,7 @@ import (
 	_"github.com/go-sql-driver/mysql"
 	"errors"
 	"github.com/qowns8/sample-web/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -16,7 +17,12 @@ type User struct {
 	Access_token string `json: "acess_token"`
 }
 
-func (user User) GetUser(data LoginFormData) User {
+func IsVaildPassword(user User, str string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(str))
+	return err == nil
+}
+
+func (user User) GetUser(data  utils.LoginFormData) User {
 	utils.Db.Where("email = ?", data.Email).First(&user)
 	return user
 }
@@ -37,7 +43,7 @@ func checkUserDuplicate(email string) bool {
 	return num < 1
 }
 
-func (user User) Create(data CreateLoginFormDate) (User, error) {
+func (user User) Create(data utils.CreateLoginFormDate) (User, error) {
 	isVaild := checkUserDuplicate(data.LoginForm.Email)
 	data.LoginForm.Pwd = string(utils.MakePassword(data.LoginForm.Pwd))
 	 newUser := &User{

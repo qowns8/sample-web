@@ -6,8 +6,6 @@ import (
 	"os"
 	"encoding/base64"
 	"crypto/rand"
-	"github.com/qowns8/sample-web/models"
-	"github.com/qowns8/sample-web/ctrls"
 )
 
 var Db  = NewRDB()
@@ -32,13 +30,8 @@ func MakePassword(str string) []byte {
 	return token
 }
 
-func IsVaildPassword(user models.User, str string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(str))
-	return err == nil
-}
-
-func MakeErrorRequestJson(code int, msg string) ctrls.ErrorRequest {
-	return ctrls.ErrorRequest{
+func MakeErrorRequestJson(code int, msg string) ErrorRequest {
+	return ErrorRequest{
 		Code:code,
 		Result:"failed",
 		Message:msg,
